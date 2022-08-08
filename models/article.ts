@@ -1,15 +1,15 @@
-class Article {
-    id: string;
+import mongoose from "mongoose";
+
+interface IArticle{
     title: string;
     body: string;
     author: string;
+};
 
-    constructor(id: string, title: string, body: string, author: string) {
-        this.id = id;
-        this.title = title;
-        this.body = body;
-        this.author = author;
-    }
-}
+const Article = mongoose.model('Article', new mongoose.Schema<IArticle>({
+    title: {type: String, required: true},
+    body: {type: String, required: true},
+    author: {type: String, required: true}
+}, {timestamps: true}));
 
-export default Article;
+export {Article,IArticle};

@@ -1,1 +1,1 @@
-export {default as Article} from "./article";
+export {Article, IArticle}  from "./article";
