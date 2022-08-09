@@ -1,13 +1,15 @@
 import {NextFunction, Request, Response} from 'express'
 import {Types} from 'mongoose'
 import {Article} from '../models';
+import { ArticleService } from '../services';
 
 const {ObjectId} = Types;
+const articleService = new ArticleService();
 
 class ArticleController {
     static async fetch(req: Request, res: Response, next: NextFunction) {
         try {
-            res.send(await Article.find());
+            res.send(await articleService.fetch());
         } catch (error) {
             next(error)
         }
@@ -15,8 +17,7 @@ class ArticleController {
 
     static async find(req: Request, res: Response, next: NextFunction) {
         try {
-            const article = await Article.findById(req.params.id);
-            // articles.find(article => article.id === req.params.id);
+            const article = await articleService.find(req.params.id);
             res.send(article);
         } catch (error) {
             next(error)
@@ -25,8 +26,8 @@ class ArticleController {
 
     static async create(req: Request, res: Response, next: NextFunction) {
         try {
-            const created = await Article.create(req.body.article);
-            res.send(created);
+            const created = await articleService.create(req.body.article);
+            res.status(201).send(created);
         } catch (error) {
             next(error);
         }
@@ -34,7 +35,7 @@ class ArticleController {
 
     static async update(req: Request, res: Response, next: NextFunction) {
         try {
-            res.send(await Article.findByIdAndUpdate(req.params.id, req.body.article, {new: true}));
+            res.send(await articleService.update(req.params.id, req.body.article));
         } catch (error) {
             next(error);
         }
@@ -42,7 +43,7 @@ class ArticleController {
 
     static async remove(req: Request, res: Response, next: NextFunction) {
         try {
-            res.send(await Article.findByIdAndRemove(req.params.id));
+            res.send(await articleService.remove(req.params.id));
         } catch (error) {
             next(error);
         }
