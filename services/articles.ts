@@ -1,4 +1,4 @@
-import { Article, IArticle } from "../models"; 
+import { Article,Comment, IArticle } from "../models"; 
 
 class ArticleService{
     fetch(){
@@ -18,7 +18,13 @@ class ArticleService{
     }
 
     async remove(id: any){
-        return await Article.findByIdAndRemove(id);
+        const removedArticle = await Article.findByIdAndRemove(id);
+        
+        if (removedArticle){
+            await Comment.deleteMany({article: id})
+        }
+        
+        return removedArticle;
     }
 }
 
