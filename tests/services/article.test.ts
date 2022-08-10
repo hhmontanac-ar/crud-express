@@ -1,11 +1,10 @@
 import {Article, IArticle, Comment} from "../../models";
 import {ArticleService} from "../../services";
 
-const mongoose = require('mongoose');
+const dBTest = require('../dBTest')
 
 let aliceArticle: IArticle;
 let bobArticle: IArticle;
-
 
 const createArticles = async () => {
     aliceArticle = await Article.create({  title: "PTSD",
@@ -20,25 +19,15 @@ const createArticles = async () => {
 
 describe("ArticleService", () => {
     beforeAll(async () => {
-        await mongoose.connect('mongodb://localhost/crud-express-test').then(() => {
-            console.log("Connected to Test Database");
-            }).catch((err: any) => {
-                console.log("Not Connected to Test Database ERROR! ", err);
-            });
+        await dBTest.connect();
     });
 
     afterEach(async () => {
-        const collections = mongoose.connection.collections;
-
-        for (const key in collections) {
-            const collection = collections[key];
-            await collection.deleteMany();
-        }
+        await dBTest.reset();
     });
 
     afterAll(async () => {
-        await mongoose.connection.dropDatabase();
-        await mongoose.connection.close();
+        await dBTest.disconnect();
     });
 
     const articleService = new ArticleService();
@@ -60,14 +49,34 @@ describe("ArticleService", () => {
     });
 
     describe('find', () => {
-        test('Should return undefined', async () => {
+        test('Should return null', async () => {
             const article = await articleService.find("62f2800d4790c511ac1022c5");
 
             expect(article).toBeNull();
         });
+
+        test('Should return article', async () => {
+            const testArticle = await Article.create({  title: "Test",
+                author: "guest",
+                body: "Body of an article"});
+
+            const article = await articleService.find(testArticle._id);
+
+            expect(article).toBeDefined();
+            expect(article?.title).toBe(testArticle.title);
+        });
     });
 
     describe('create', () => {
+        test('Should create article', async () => {
+            const article = { title: 'IMF', author: 'Jim', body: 'An article about the IMF in WW3' } ;
+
+            const createdArticle = await articleService.create(article);
+
+            expect(createdArticle).not.toBeNull();
+            expect(createdArticle?.title).toBe(article.title);
+        });
+
         test('Should not create article if author is null', async () => {
             const article = { title: 'IMF', author: 'Jim', body: 'An article about the IMF in WW3' } ;
 
@@ -81,6 +90,18 @@ describe("ArticleService", () => {
     });
 
     describe('update', () => {
+        test('Should update article', async () => {
+            const gotArticle = await Article.create({
+                title: "GOT",
+                author: "GRRMartin",
+                body: "An article about GOT in WW3"
+            });
+
+            const modified = await articleService.update(gotArticle._id, { title: 'No GOT' } as IArticle);
+
+            expect(modified?.title).toBe('No GOT');
+        });
+
         test('Should not update article with null values', async () => {
             const lotrArticle = await Article.create({
                 title: "LOTR",

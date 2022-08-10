@@ -1,10 +1,10 @@
-import mongoose, {Schema} from "mongoose";
+import mongoose, {Schema, Types} from "mongoose";
 
 interface IComment{
     title : String,
     author: String,
     body: String,
-    article: Schema.Types.ObjectId
+    article: Types.ObjectId
 }
 
 const Comment = mongoose.model('Comment', new mongoose.Schema<IComment>({
