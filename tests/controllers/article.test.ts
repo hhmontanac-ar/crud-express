@@ -14,10 +14,10 @@ describe("Fetch Articles request", () => {
     await dBTest.reset();
     });
 
-    afterAll(async () => {
-        await dBTest.disconnect();
-        next.mockClear();
-    });
+  afterAll(async () => {
+      await dBTest.disconnect();
+      next.mockClear();
+  });
 
   test("fetch", async () => {
     const request = {};

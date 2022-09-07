@@ -1,7 +1,13 @@
 import mongoose from "mongoose";
+import { MongoMemoryServer } from 'mongodb-memory-server';
+
+const mongoServer = async () => {
+        return await MongoMemoryServer.create();
+};
 
 module.exports.connect = async () => {
-    await mongoose.connect('mongodb://localhost/crud-express-test').then(() => {
+    var _mongoServer = await mongoServer();
+    await mongoose.connect(_mongoServer.getUri(), { dbName: "crud-express-test" }).then(() => {
         console.log("Connected to Test Database");
         }).catch((err: any) => {
             console.log("Not Connected to Test Database ERROR! ", err);

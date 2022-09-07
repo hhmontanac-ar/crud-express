@@ -5,13 +5,14 @@
   "main": "index.ts",
   "scripts": {
     "start": "nodemon index.ts",
-    "test": "jest --runInBand"
+    "test": "jest --runInBand --detectOpenHandles --forceExit"
   },
   "author": "Axel Navarro (navarroaxel@gmail.com)",
   "license": "ISC",
   "dependencies": {
     "body-parser": "^1.20.0",
     "express": "^4.18.1",
+    "mongodb-memory-server": "^8.9.1",
     "mongoose": "^6.5.1",
     "morgan": "^1.10.0",
     "nodemon": "^2.0.19"
